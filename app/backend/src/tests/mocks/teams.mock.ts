@@ -65,6 +65,14 @@ const teams = [
   },
 ];
 
+const oneTeam = [
+  {
+    id: 7,
+    teamName: 'Flamengo',
+  },
+];
+
 export default {
   teams,
+  oneTeam,
 };
