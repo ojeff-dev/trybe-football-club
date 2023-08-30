@@ -5,3 +5,5 @@ export type ServiceResponse<T> = {
   status: ServiceResponseType,
   data: T | { message: string },
 };
+
+export type ServiceMessage = { message: string };
