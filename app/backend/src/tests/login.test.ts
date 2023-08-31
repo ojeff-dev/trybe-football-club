@@ -10,6 +10,8 @@ chai.use(chaiHttp);
 const { expect } = chai;
 
 import loginMock from './mocks/login.mock';
+import JWT from '../utils/JWT';
+import User from '../database/models/UserModel';
 
 const {
   validLoginBody,
@@ -17,6 +19,7 @@ const {
   noPasswordLoginBody,
   notExistingUserBody,
   existingUserWithWrongPasswordBody,
+  genericAdminUserInDB,
 } = loginMock;
 
 describe('POST /login', () => {
@@ -55,5 +58,35 @@ describe('POST /login', () => {
 
     expect(httpResponse.status).to.equal(200);
     expect(httpResponse.body).to.have.key('token');
+  });
+});
+
+describe('GET login/role', () => {
+  beforeEach(function () { sinon.restore(); });
+
+  it('Deve retornar um erro com status 401 se nenhum token for fornecido', async () => {
+    const httpResponse = await chai.request(app).get('/login/role');
+
+    expect(httpResponse.status).to.equal(401);
+    expect(httpResponse.body).to.be.deep.equal({ message: 'Token not found' });
+  });
+
+  it('Retorna um erro com status 401 se for fornecido um token inválido', async () => {
+    const httpResponse = await chai.request(app).get('/login/role').set('authorization', 'invalid_token');
+
+    expect(httpResponse.status).to.equal(401);
+    expect(httpResponse.body).to.be.deep.equal({ message: 'Token must be a valid token' });
+  });
+
+  it('Retorna um objeto com a role do usuário quando é fornecido um token válido - status 200', async () => {
+    sinon.stub(JWT, 'verify')
+      .resolves('token');
+    sinon.stub(User, 'findOne')
+      .resolves(genericAdminUserInDB as any);
+
+    const httpResponse = await chai.request(app).get('/login/role').set('authorization', 'token');
+
+    expect(httpResponse.status).to.equal(200);
+    expect(httpResponse.body).to.be.deep.equal({ role: 'admin' });
   });
 });
