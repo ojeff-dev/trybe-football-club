@@ -6,6 +6,12 @@ const router = Router();
 
 const userController = new UserController();
 
+router.get(
+  '/role',
+  Validations.validateToken,
+  (req: Request, res: Response) => userController.getUserRole(req, res),
+);
+
 router.post(
   '/',
   Validations.validateUserFields,

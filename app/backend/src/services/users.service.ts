@@ -24,4 +24,13 @@ export default class UserService {
     const token = JWT.sign({ email, password });
     return { status: 'success', data: { token } };
   }
+
+  public async getUserRole(email: string): Promise<ServiceResponse<object>> {
+    const user = await this._userModel.getUserByEmail(email);
+
+    return {
+      status: 'success',
+      data: { role: user?.role },
+    };
+  }
 }
