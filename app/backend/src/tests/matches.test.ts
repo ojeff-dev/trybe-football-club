@@ -11,7 +11,7 @@ const { expect } = chai;
 import MatchModel from '../database/models/MatchModel';
 import matchesMock from './mocks/matches.mock';
 
-const { matches } = matchesMock;
+const { matches, matchesInProgress, finishedMatches } = matchesMock;
 
 describe('GET /matches', () => {
   beforeEach(function () { sinon.restore(); });
@@ -23,6 +23,19 @@ describe('GET /matches', () => {
     const httpResponse = await chai.request(app).get('/matches');
 
     expect(httpResponse.body).to.deep.equal(matches);
+    expect(httpResponse.status).to.equal(200);
+  });
+
+  it('Lista as partidas(matches) em progresso(InProgress) corretamente com um status 200', async () => {
+    const inProgressStatus = true;
+    const matchesToReturn = inProgressStatus ? matchesInProgress : finishedMatches;
+  
+    sinon.stub(MatchModel, 'findAll')
+      .resolves(matchesToReturn as any);
+
+    const httpResponse = await chai.request(app).get(`/matches?inProgress=${inProgressStatus}`);
+
+    expect(httpResponse.body).to.deep.equal(matchesInProgress);
     expect(httpResponse.status).to.equal(200);
   });
 });

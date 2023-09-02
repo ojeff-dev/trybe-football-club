@@ -5,8 +5,9 @@ import mapStatusHTTP from '../utils/mapStatusHTTP';
 export default class MatchesController {
   constructor(private _matchService: MatchesService = new MatchesService()) {}
 
-  public async getMatches(_req: Request, res: Response): Promise<Response> {
-    const serviceResponse = await this._matchService.getMatches();
+  public async getMatches(req: Request, res: Response): Promise<Response> {
+    const { inProgress } = req.query;
+    const serviceResponse = await this._matchService.getMatches(inProgress as string);
 
     return res.status(mapStatusHTTP(serviceResponse.status)).json(serviceResponse.data);
   }
