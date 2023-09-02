@@ -46,7 +46,7 @@ export default class MatchesService {
       awayTeamGoals,
     );
     return {
-      status: 'success',
+      status: 'created',
       data,
     };
   }
