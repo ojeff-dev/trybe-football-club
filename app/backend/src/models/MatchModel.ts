@@ -37,4 +37,21 @@ export default class MatchModel implements IMatchModel {
     });
     return numberOfRowsUpdated;
   }
+
+  public async createMatch(
+    homeTeamId: number,
+    awayTeamId: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<IMatch> {
+    const data = await this._model.create({
+      homeTeamId,
+      awayTeamId,
+      homeTeamGoals,
+      awayTeamGoals,
+      inProgress: true,
+    });
+
+    return data;
+  }
 }

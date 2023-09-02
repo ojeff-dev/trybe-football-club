@@ -32,4 +32,22 @@ export default class MatchesService {
       data: { message: 'Finished' },
     };
   }
+
+  public async createMatch(
+    homeTeamId: number,
+    awayTeamId: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<ServiceResponse<IMatch>> {
+    const data = await this._matchModel.createMatch(
+      homeTeamId,
+      awayTeamId,
+      homeTeamGoals,
+      awayTeamGoals,
+    );
+    return {
+      status: 'success',
+      data,
+    };
+  }
 }
