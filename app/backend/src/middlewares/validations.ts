@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import JWT from '../utils/JWT';
+import TeamsService from '../services/teams.service';
 
 export default class Validations {
   static validateUserFields(req: Request, res: Response, next: NextFunction): Response | void {
@@ -31,6 +32,30 @@ export default class Validations {
     }
 
     req.body.payload = validToken;
+    next();
+  }
+
+  static async validateMatch(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    const { homeTeamId, awayTeamId } = req.body;
+
+    if (homeTeamId === awayTeamId) {
+      return res.status(422)
+        .json({ message: 'It is not possible to create a match with two equal teams' });
+    }
+
+    const teamsService = new TeamsService();
+    const homeTeam = (await teamsService.getTeamByPk(homeTeamId)).status;
+    const awayTeam = (await teamsService.getTeamByPk(awayTeamId)).status;
+
+    if (homeTeam === 'notFound' || awayTeam === 'notFound') {
+      return res.status(404)
+        .json({ message: 'There is no team with such id!' });
+    }
+
     next();
   }
 }

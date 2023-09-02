@@ -118,7 +118,7 @@ describe('POST /matches', () => {
 
     expect(httpResponse.body)
       .to.deep
-      .equal({ message: 'It is not possible to create a match with two equal teams !' });
+      .equal({ message: 'It is not possible to create a match with two equal teams' });
     expect(httpResponse.status).to.equal(422);
   });
 
