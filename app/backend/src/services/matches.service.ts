@@ -50,4 +50,17 @@ export default class MatchesService {
       data,
     };
   }
+
+  public async updateMatch(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<ServiceResponse<void>> {
+    await this._matchModel.updateMatch(id, homeTeamGoals, awayTeamGoals);
+
+    return {
+      status: 'success',
+      data: { message: 'Updated !' },
+    };
+  }
 }

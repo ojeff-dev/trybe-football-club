@@ -10,4 +10,5 @@ export default interface IMatchModel {
     homeTeamGoals: number,
     awayTeamGoals: number,
   ): Promise<IMatch>,
+  updateMatch(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<number[]>;
 }
