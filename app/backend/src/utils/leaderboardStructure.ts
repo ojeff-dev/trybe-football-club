@@ -87,9 +87,50 @@ const rankTeams = (teams: LeaderboardType[]): LeaderboardType[] => {
   return teams;
 };
 
+const mergeStructures = (
+  structureHome: LeaderboardType,
+  structureAway: LeaderboardType,
+): LeaderboardType => {
+  const mergedStructure = { ...structureHome };
+
+  mergedStructure.totalPoints += structureAway.totalPoints;
+  mergedStructure.totalGames += structureAway.totalGames;
+  mergedStructure.totalVictories += structureAway.totalVictories;
+  mergedStructure.totalDraws += structureAway.totalDraws;
+  mergedStructure.totalLosses += structureAway.totalLosses;
+  mergedStructure.goalsFavor += structureAway.goalsFavor;
+  mergedStructure.goalsOwn += structureAway.goalsOwn;
+  mergedStructure.goalsBalance = mergedStructure.goalsFavor - mergedStructure.goalsOwn;
+  mergedStructure.efficiency = `${((mergedStructure
+    .totalPoints / (mergedStructure.totalGames * 3)) * 100).toFixed(2)}`;
+
+  return mergedStructure;
+};
+
+const mergeLeaderboard = (
+  leaderboardHome: LeaderboardType[],
+  leaderboardAway: LeaderboardType[],
+): LeaderboardType[] => {
+  const mergedLeaderboard: LeaderboardType[] = [];
+
+  leaderboardHome.forEach((structureHome) => {
+    const structureAway = leaderboardAway
+      .find((structure) => structure.name === structureHome.name);
+
+    if (structureAway) {
+      const mergedStructure = mergeStructures(structureHome, structureAway);
+
+      mergedLeaderboard.push(mergedStructure);
+    }
+  });
+
+  return rankTeams(mergedLeaderboard);
+};
+
 export default {
   create,
   teamWin,
   write,
   rankTeams,
+  mergeLeaderboard,
 };

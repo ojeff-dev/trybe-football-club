@@ -12,7 +12,7 @@ import LeaderboardService from '../services/leaderboard.service';
 import leaderboardMock from './mocks/leaderboard.mock';
 import JWT from '../utils/JWT';
 
-const { leaderboardByHome, leaderboardByAway } = leaderboardMock;
+const { leaderboardByHome, leaderboardByAway, leaderboard } = leaderboardMock;
 
 describe('GET /leaderboard/home', () => {
   let leaderboardService: LeaderboardService;
@@ -57,7 +57,14 @@ describe('GET /leaderboard', () => {
     leaderboardService = new LeaderboardService();
   });
   
-  it.skip('Lista a tabela de classificação considerando todos os resultados(home and away) - status 200', async () => {
-    //
+  it('Lista a tabela de classificação considerando todos os resultados(home and away) - status 200', async () => {
+    const serviceResponse = await leaderboardService.getFullLeaderboard();
+
+    expect(serviceResponse.status).to.equal('success');
+    expect(serviceResponse.data).to.deep.equal(leaderboard);
+  
+    const httpResponse = await chai.request(app).get('/leaderboard');
+    expect(httpResponse.status).to.equal(200);
+    expect(httpResponse.body).to.deep.equal(serviceResponse.data);
   });
 });

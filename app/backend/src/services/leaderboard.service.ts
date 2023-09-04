@@ -35,6 +35,15 @@ export default class LeaderboardService {
     return leaderboardStructure;
   }
 
+  private async mergeLeaderboard(): Promise<LeaderboardType[]> {
+    const leaderboardHome = await this.writeOnLeaderboard('homeTeam');
+    const leaderboardAway = await this.writeOnLeaderboard('awayTeam');
+
+    const leaderboard = LeaderboardStructure.mergeLeaderboard(leaderboardHome, leaderboardAway);
+
+    return leaderboard;
+  }
+
   public async getLeaderboard(homeOrAwayTeam: string): Promise<ServiceResponse<LeaderboardType[]>> {
     const leaderboard = await this.writeOnLeaderboard(homeOrAwayTeam);
 
@@ -43,6 +52,15 @@ export default class LeaderboardService {
     return {
       status: 'success',
       data: sortedLeaderboard,
+    };
+  }
+
+  public async getFullLeaderboard(): Promise<ServiceResponse<LeaderboardType[]>> {
+    const leaderboard = await this.mergeLeaderboard();
+
+    return {
+      status: 'success',
+      data: leaderboard,
     };
   }
 }
